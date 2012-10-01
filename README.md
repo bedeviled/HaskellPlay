@@ -9,5 +9,11 @@ getting Haskell up and moving.
 ```bash
 brew install --devel --64-bit haskell-platform
 ```
+DOESN'T WORK!
+
+Better to use http://www.haskell.org/platform/mac.html
+
+Also, I found https://github.com/jpalardy/vim-slime to be very useful while
+coding.
 
 
