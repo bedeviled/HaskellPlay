@@ -84,6 +84,8 @@ the list, the list remains unchanged.
 
 \begin{code}
  removeFst :: Int -> [Int] -> [Int]
+ removeFst m [x] | m == x    = []
+                 | otherwise = [x]
  removeFst m (x:xs) | m == x    = xs
                     | otherwise = x : removeFst m xs
 
@@ -114,4 +116,24 @@ $a_{1}a_{2}a_{3}...$ to $a_1 a_2 a_2 a_3 a_3 a_3 ...$.
  blowup x = (reverse (blowdown (reverse x)))
 \end{code}
 
+{\bf Exercise 1.15} Write a function \texttt{srtStrings} that sorts a list of
+Strings in alphabetical order.
+
+\begin{code}
+ mnmString :: [String] -> String
+ mnmString [] = error "empty list"
+ mnmString [x] = x
+ mnmString (x:xs) = min x (mnmString xs)
+
+ removeFstString :: String -> [String] -> [String]
+ removeFstString m [x] | m == x     = []
+                       | otherwise  = [x]
+ removeFstString m (x:xs) | m == x      = xs
+                          | otherwise   = x : removeFstString m xs
+
+ srtStrings :: [String] -> [String]
+ srtStrings [] = []
+ srtStrings xs = m : (srtStrings (removeFstString m xs)) where m = mnmString xs
+
+\end{code}
 \end{document}
