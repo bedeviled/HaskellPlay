@@ -65,4 +65,53 @@ first test is passed.
 \begin{code}%sample
 rem :: Integer -> Integer -> Integer
 \end{code}
+
+\begin{code}
+ mnmInt :: [Int] -> Int
+ mnmInt [] = error "empty list"
+ mnmInt [x] = x
+ mnmInt (x:xs) = min x (mnmInt xs)
+
+ mxmInt :: [Int] -> Int
+ mxmInt [] = error  "empty list"
+ mxmInt [x] = x
+ mxmInt (x:xs) = max x (mxmInt xs)
+\end{code}
+
+{\bf Exercise 1.11} Define a function \texttt{removeFst} that removes the first
+occurrence of an integer $m$ from a list of integers.  If $m$ does not occur in
+the list, the list remains unchanged.
+
+\begin{code}
+ removeFst :: Int -> [Int] -> [Int]
+ removeFst m (x:xs) | m == x    = xs
+                    | otherwise = x : removeFst m xs
+
+ srtInts :: [Int] -> [Int]
+ srtInts [] = []
+ srtInts xs = m : (srtInts (removeFst m xs)) where m = mnmInt xs
+\end{code}
+
+{\bf Exercise 1.13} Write a function \texttt{count} for counting the number of
+occurrences of a character in a string.
+
+\begin{code}
+ count :: Char -> String -> Int
+ count c [] = 0
+ count c (x:xs) | c == x    = 1 + count c xs
+                | otherwise = count c xs
+\end{code}
+
+{\bf Exercise 1.14} Write a function \texttt{blowup} that converts
+$a_{1}a_{2}a_{3}...$ to $a_1 a_2 a_2 a_3 a_3 a_3 ...$.
+
+\begin{code}
+ blowdown :: String -> String
+ blowdown [x]    = [x]
+ blowdown (x:xs) = take (length (x:xs)) (repeat x) ++ blowdown xs
+
+ blowup :: String -> String
+ blowup x = (reverse (blowdown (reverse x)))
+\end{code}
+
 \end{document}
