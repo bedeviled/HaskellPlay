@@ -136,4 +136,18 @@ Strings in alphabetical order.
  srtStrings xs = m : (srtStrings (removeFstString m xs)) where m = mnmString xs
 
 \end{code}
+
+{\bf Exercise 1.17} Write a function \texttt{substring} that checks whether
+\texttt{str1} is a substring of \texttt{str2}.
+
+\begin{code}
+ prefix :: String -> String -> Bool
+ prefix [] ys = True
+ prefix (x:xs) [] = False
+ prefix (x:xs) (y:ys) = (x==y) && prefix xs ys
+
+ substring :: String -> String -> Bool
+ substring (x:xs) [] = False
+ substring (x:xs) (y:ys) = (prefix (x:xs) (y:ys) || (substring (x:xs) ys))
+\end{code}
 \end{document}
