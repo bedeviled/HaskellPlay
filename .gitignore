@@ -8,3 +8,5 @@ cabal-dev
 *.log
 *.pdf
 repl-port
+.idea/*
+.so
