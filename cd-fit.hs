@@ -2,6 +2,8 @@ module Main where
 
 import           Text.ParserCombinators.Parsec
 import Data.List (sortBy)
+import Test.QuickCheck
+import Control.Monad (liftM2, replicateM)
 
 parseInput =
     do dirs <- many dirAndSize
@@ -9,6 +11,9 @@ parseInput =
        return dirs
 
 data Dir = Dir {dir_size::Int, dir_name::String} deriving Show
+instance Eq Dir where
+    (==) d1 d2 = dir_size d1 == dir_size d2 &&
+                 dir_name d1 == dir_name d2
 
 data DirPack = DirPack {pack_size::Int, dirs::[Dir]} deriving Show
 
@@ -38,3 +43,15 @@ main = do input <- getContents
                      Right result -> result
           putStrLn "DEBUG: parsed:"; print dirs
           putStrLn "Solution:"; print (greedy_pack dirs)
+
+--Tests
+instance Arbitrary Dir where
+    arbitrary = liftM2 Dir gen_size gen_name
+        where gen_size = do s <- choose (10,1400)
+                            return (s*1024*1024)
+              gen_name = do n <- choose (1,300)
+                            replicateM n (elements "fubar/")
+
+prop_greedy_pack_is_fixpoint ds =
+    let pack = greedy_pack ds
+        in pack_size pack == pack_size (greedy_pack (dirs pack))
