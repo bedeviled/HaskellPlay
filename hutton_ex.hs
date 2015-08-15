@@ -281,11 +281,40 @@ type Bit = Int
 int2bin :: Int -> [Bit]
 int2bin = unfold (==0) (`mod`2) (`div`2)
 
+bin2int :: [Bit] -> Int
+bin2int = foldr (\x y -> x + 2*y) 0
+
 chop8 :: [Bit] -> [[Bit]]
 chop8 = unfold null (take 8) (drop 8)
+
+chop :: Int -> [Bit] -> [[Bit]]
+chop n = unfold null (take n) (drop n)
 
 myOtherMap :: (a -> b) -> [a] -> [b]
 myOtherMap f = unfold null (f . head) tail
 
 myIterate :: (a -> a) -> a -> [a]
 myIterate = unfold (const False) id
+
+parity :: [Bit] -> Bit
+parity = (`mod` 2) . length . filter (==1)
+
+make9 :: [Bit] -> [Bit]
+make9 bits = take 8 (bits ++ repeat 0) ++ [parity bits]
+
+parityEncode :: String -> [Bit]
+parityEncode = concat . map (make9 . int2bin . ord)
+
+parityDecode :: [Bit] -> String
+parityDecode = map (chr . bin2int . checkParity) . chop 9
+  where checkParity bits | parity (init bits) == last bits = init bits
+                         | otherwise = error "Parity check failed."
+
+faultyChannel :: [Bit] -> [Bit]
+faultyChannel = tail
+
+channel :: [Bit] -> [Bit]
+channel = id
+
+transmit :: ([Bit] -> [Bit])-> String -> String
+transmit channel = parityDecode . channel . parityEncode
