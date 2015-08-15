@@ -255,3 +255,37 @@ myFilter :: (a -> Bool) -> [a] -> [a]
 myFilter p = foldr pp []
   where pp x xs | p x = x : xs
                 | otherwise = xs
+
+dec2int :: [Int] -> Int
+dec2int = foldl (\m n -> 10*m + n) 0
+
+compose :: [a -> a] -> (a->a)
+compose = foldr (.) id
+
+-- sumsqreven = compose [sum, map (^2), filter even]
+-- is incorrect because while map (^2) and filter even take type a = [b] to type a = [b]
+-- sum takes type c = [a] to type a != c.
+
+myCurry :: ((a,b) -> c) -> a -> b -> c
+myCurry f x y = f (x,y)
+
+myUncurry :: (a -> b -> c) -> ((a,b) -> c)
+myUncurry f = \(x,y) -> f x y
+
+unfold :: (a -> Bool) -> (a -> b) -> (a -> a) -> a -> [b]
+unfold p h t x | p x = []
+               | otherwise = h x : unfold p h t (t x)
+
+type Bit = Int
+
+int2bin :: Int -> [Bit]
+int2bin = unfold (==0) (`mod`2) (`div`2)
+
+chop8 :: [Bit] -> [[Bit]]
+chop8 = unfold null (take 8) (drop 8)
+
+myOtherMap :: (a -> b) -> [a] -> [b]
+myOtherMap f = unfold null (f . head) tail
+
+myIterate :: (a -> a) -> a -> [a]
+myIterate = unfold (const False) id
